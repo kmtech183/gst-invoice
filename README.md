@@ -1,58 +1,110 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# GST Invoice & Inventory Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![Laravel Version](https://img.shields.io/badge/Laravel-13.x-red.svg)](https://laravel.com)
+[![PHP Version](https://img.shields.io/badge/PHP-8.3%2B-blue.svg)](https://php.net)
+[![Livewire](https://img.shields.io/badge/Livewire-3.x-pink.svg)](https://livewire.laravel.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-## About Laravel
+An enterprise-grade, high-performance **GST Invoice & Inventory ERP Application** tailored for Indian Small and Medium Businesses (SMBs). Built on **Laravel 13**, **Livewire 3**, **Tailwind CSS**, and **DomPDF**, with automated intra-state (CGST + SGST) and inter-state (IGST) tax calculation, sequential invoice numbering, stock audit trails, asynchronous PDF generation, and multi-tenant isolation.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🌟 Key Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **⚡ Real-Time GST Engine (Livewire 3)**:
+  - Automated state detection based on 15-digit GSTIN (e.g., `27` for Maharashtra, `24` for Gujarat).
+  - Dynamic intra-state (`50% CGST + 50% SGST`) and inter-state (`100% IGST`) tax calculations without full-page reloads.
+  - Indian currency words converter (Lakhs & Crores) for legal tax compliance.
 
-## Learning Laravel
+- **📦 Inventory & Double-Entry Stock Ledger**:
+  - Immutable audit trail in `stock_moves` table for every sale, purchase, and stock adjustment.
+  - Pessimistic locking (`lockForUpdate`) to prevent negative inventory during simultaneous billings.
+  - Low stock warning badges and reorder notifications.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **📄 Official GST Tax Invoice PDF (`barryvdh/laravel-dompdf`)**:
+  - Compliant GST Rule 46 printable tax invoices with HSN/SAC breakdowns, seller/buyer state codes, terms, and signature blocks.
+  - Asynchronous background rendering and customer email notifications via queued jobs (`SendInvoiceEmailJob`).
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **📊 High-Performance Executive Dashboard**:
+  - Multi-level caching with automatic Model Observer invalidation (`InvoiceObserver`, `StockMoveObserver`).
+  - Real-time summaries of monthly turnover, total GST collected, active invoices, and low stock warnings.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- **🛡️ Enterprise Security & RBAC**:
+  - Role-Based Access Control (`admin`, `sales`, `accountant`) with Laravel Policies (`InvoicePolicy`, `ProductPolicy`, `CustomerPolicy`).
+  - Strict multi-tenant data boundaries preventing cross-tenant data access (IDOR protection).
+  - Custom validation rules for Indian GSTIN (`GstinRule`) and HSN/SAC codes (`HsnCodeRule`).
 
-## Agentic Development
+- **🔌 REST API & Performance**:
+  - Clean API Resource transformers (`ProductResource`, `InvoiceResource`) with cursor pagination and rate limiting (`throttle:60,1`).
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+- **🧪 100% Automated Test Coverage (Pest PHP)**:
+  - Unit tests for tax algorithms and currency formatters.
+  - Feature tests for invoice creation, stock deduction, and tenant isolation policies.
 
+---
+
+## 🏗️ Architecture & Technology Stack
+
+| Component | Technology |
+|---|---|
+| **Backend Framework** | Laravel 13 (PHP 8.3+) |
+| **Reactivity Layer** | Livewire 3 + Volt + Alpine.js |
+| **Styling & UI** | Tailwind CSS (Emerald/Slate Theme) |
+| **PDF Generation** | `barryvdh/laravel-dompdf` (v3.1+) |
+| **Testing Engine** | Pest PHP (v5.x) |
+| **Authentication** | Laravel Breeze (Livewire Stack) |
+| **Database** | MySQL / MariaDB / SQLite with indexed composite lookups |
+
+---
+
+## 🚀 Local Installation & Setup
+
+### Prerequisites
+- PHP >= 8.3 with `bcmath`, `ctype`, `fileinfo`, `json`, `mbstring`, `pdo`, `tokenizer`, `xml` extensions.
+- Composer 2.x
+- Node.js (v18+) & NPM
+
+### Setup Instructions
 ```bash
-composer require laravel/boost --dev
+# 1. Clone the repository
+git clone https://github.com/kmtech183/gst-invoice.git
+cd gst-invoice
 
-php artisan boost:install
+# 2. Install Composer dependencies
+composer install
+
+# 3. Setup environment configuration
+cp .env.example .env
+php artisan key:generate
+
+# 4. Configure Database in .env and run migrations with seed data
+php artisan migrate:fresh --seed
+
+# 5. Install frontend packages and build assets
+npm install
+npm run build
+
+# 6. Start development server
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Default Demo Credentials (from Seeder)
+| Role | Email | Password |
+|---|---|---|
+| **Admin** | `admin@apextech.in` | `password` |
+| **Sales** | `sales@apextech.in` | `password` |
+| **Accountant** | `accountant@apextech.in` | `password` |
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🧪 Running Automated Tests
 
-## Code of Conduct
+```bash
+php artisan test
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 📄 License
+This project is open-sourced software licensed under the [MIT License](LICENSE).
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
