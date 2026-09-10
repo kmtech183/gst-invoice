@@ -9,6 +9,16 @@ new #[Layout('layouts.guest')] class extends Component {
     public LoginForm $form;
 
     /**
+     * Auto-fill demo credentials for quick testing.
+     */
+    public function fillDemo(string $email, string $password = 'password'): void
+    {
+        $this->form->email = $email;
+        $this->form->password = $password;
+        $this->resetValidation();
+    }
+
+    /**
      * Handle an incoming authentication request.
      */
     public function login(): void
@@ -48,6 +58,39 @@ new #[Layout('layouts.guest')] class extends Component {
     <!-- Session Status -->
     <x-auth-session-status class="mb-4"
         :status="session('status')" />
+
+    <!-- Demo Credentials Quick Selector -->
+    <div class="mb-6 p-3.5 bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-2xl">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Demo Credentials (Click to Fill)
+            </span>
+            <span class="text-[10px] text-slate-400">Pass: password</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+            <button type="button" 
+                wire:click="fillDemo('admin@apextech.in', 'password')"
+                class="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-center border transition-all bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300 shadow-sm active:scale-95">
+                <span class="block text-[11px] font-bold">Admin</span>
+                <span class="block text-[9px] text-slate-400 truncate">admin@apex...</span>
+            </button>
+            <button type="button" 
+                wire:click="fillDemo('sales@apextech.in', 'password')"
+                class="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-center border transition-all bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300 shadow-sm active:scale-95">
+                <span class="block text-[11px] font-bold">Sales</span>
+                <span class="block text-[9px] text-slate-400 truncate">sales@apex...</span>
+            </button>
+            <button type="button" 
+                wire:click="fillDemo('accountant@apextech.in', 'password')"
+                class="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-center border transition-all bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-emerald-500 hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-700 dark:text-slate-300 shadow-sm active:scale-95">
+                <span class="block text-[11px] font-bold">Accountant</span>
+                <span class="block text-[9px] text-slate-400 truncate">accountant@...</span>
+            </button>
+        </div>
+    </div>
 
     <form wire:submit="login" class="space-y-5">
         <!-- Email Address -->
